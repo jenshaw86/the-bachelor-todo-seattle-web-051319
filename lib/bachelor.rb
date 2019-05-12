@@ -79,7 +79,7 @@ def get_average_age_for_season(data, season)
             contestant_age = value.to_i
             ages_sum += contestant_age
             num_of_contestants += 1
-            puts "#{contestant_age}, #{ages_sum}
+            puts "#{contestant_age}, #{ages_sum}""
           end
         end
       end
