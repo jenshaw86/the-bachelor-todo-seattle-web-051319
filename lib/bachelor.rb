@@ -1,47 +1,28 @@
 require "pry"
+
 def get_first_name_of_season_winner(data, season)
-  the_winner_is = ""
-  
-  data.each do |season_number, contestants|
-    if season_number == season
-      contestants.each do |contestant|
-        contestant.each do |attribute, value|
-          if attribute == "status" && value == "Winner"
-            # binding.pry
-            the_winner_is = contestant["name"].split(" ").first
-          end
-        end
-      end
-    end
+  winner = data[season].find do |contestant|
+    contestant["status"] == "Winner"
   end
-  the_winner_is
+  first_name = winner["name"].split(" ").first
 end
 
 def get_contestant_name(data, occupation)
-  name = ""
-  
   data.each do |season, contestants|
-    contestants.each do |contestant|
-      contestant.each do |attribute, value|
-        if attribute == "occupation" && value == occupation
-          # binding.pry
-          name = contestant["name"]
-        end
-      end
+    contestant = contestants.find {|person| person.has_value?(occupation)}
+    if contestant
+      return contestant["name"]
     end
   end
-  name
 end
 
+# Can I approach this differently without having to initiate a count variable?
 def count_contestants_by_hometown(data, hometown)
   natives = 0
-  
   data.each do |season, contestants|
-    contestants.each do |contestant|
-      contestant.each do |attribute, value|
-        if attribute == "hometown" && value == hometown
-          natives += 1
-        end
+    contestants.each do |person|
+      if person.has_value?(hometown)
+        natives += 1
       end
     end
   end
@@ -49,36 +30,18 @@ def count_contestants_by_hometown(data, hometown)
 end
 
 def get_occupation(data, hometown)
-  occupation = ""
-  
   data.each do |season, contestants|
-    contestants.each do |contestant|
-      contestant.each do |attribute, value|
-        if attribute == "hometown" && value == hometown
-          occupation = contestant["occupation"]
-          return occupation
-        end
-      end
+    contestant = contestants.find {|person| person.has_value?(hometown)}
+    if contestant
+      return contestant["occupation"]
     end
   end
 end
 
 def get_average_age_for_season(data, season)
-  ages_sum = 0
-  num_of_contestants = 0
-  
-  data.each do |season_number, contestants|
-    if season_number == season
-      contestants.each do |contestant|
-        contestant.each do |attribute, value|
-          if attribute == "age"
-            contestant_age = value.to_i
-            ages_sum += contestant_age
-            num_of_contestants += 1
-          end
-        end
-      end
-    end
-  end
-  average_age = (ages_sum/num_of_contestants.to_f).round
+  season_contestants = data[season]
+  ages_array = season_contestants.collect {|person| person["age"].to_i}
+  num_of_ppl = ages_array.length
+  total_age = total_age
+  average_age = (total_age/num_of_ppl.to_f).round
 end
